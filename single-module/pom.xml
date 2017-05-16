@@ -6,7 +6,7 @@
   <groupId>com.example.maven-samples</groupId>
   <artifactId>single-module-project</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>A Single Maven Module</name>
   <description>Sample single module Maven project with a working, deployable site.</description>
   <url>http://www.example.com</url>
@@ -24,10 +24,69 @@
     </site>
   </distributionManagement>
 
+  <profiles>
+    <profile>
+      <id>snyk</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.snyk</groupId>
+            <artifactId>snyk-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <id>snyk-test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>snyk-monitor</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>monitor</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <!--<apiToken>${env.SNYK_LOCAL_API_TOKEN}</apiToken>-->
+              <!--<endpoint>http://localhost:8000/api</endpoint>-->
+              <apiToken>${env.SNYK_DEV_API_TOKEN}</apiToken>
+              <endpoint>https://dev.snyk.io</endpoint>
+              <!--<apiToken>${env.SNYK_PROD_API_TOKEN}</apiToken>-->
+              <failOnSeverity>high</failOnSeverity>
+              <org>deebugger</org>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <finalName>${project.artifactId}</finalName>
 
     <plugins>
+      <plugin>
+        <groupId>io.github.deebugger</groupId>
+        <artifactId>hello-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>sayhi</id>
+            <phase>test</phase>
+            <goals>
+              <goal>sayhi</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+
+
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
